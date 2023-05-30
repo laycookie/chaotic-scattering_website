@@ -1,9 +1,9 @@
 import { simulate } from "chaos_theory";
 import * as PIXI from "pixi.js";
-import type { Settings } from "./types.d";
+import type { Settings } from "./main.d";
 
-const res_x = 500;
-const res_y = 500;
+const res_x = window.innerWidth * 0.9;
+const res_y = window.innerHeight * 0.9;
 let app = new PIXI.Application({
   width: res_x,
   height: res_y,
@@ -12,8 +12,6 @@ let app = new PIXI.Application({
 document.body.appendChild(app.view as unknown as Node);
 
 // render circles
-const SCALER_CONST = 30;
-
 function calculateNewPoint(
   originalX: number,
   originalY: number,
@@ -31,12 +29,18 @@ function calculateNewPoint(
   return { x: newX, y: newY };
 }
 
-export function render({ ini_x, ini_y, ini_angle, reflectionsNum }: Settings) {
+export function render({
+  ini_x,
+  ini_y,
+  ini_angle,
+  reflectionsNum,
+  zoom,
+}: Settings) {
+  const SCALER_CONST = zoom;
   // clear canvas before the next render
   app.stage.removeChildren();
 
   const out = JSON.parse(simulate(ini_x, ini_y, ini_angle, reflectionsNum));
-  console.log(out);
   // create circle sprite
   for (let i of out.circles) {
     let circle = new PIXI.Graphics();
@@ -75,5 +79,13 @@ export function render({ ini_x, ini_y, ini_angle, reflectionsNum }: Settings) {
     line.x = res_x / 2;
     line.y = res_y / 2;
     app.stage.addChild(line);
+  }
+  const anglePointer = document.getElementById("anglePointer");
+  const RanNum = document.getElementById("RanNum");
+  if (anglePointer && RanNum) {
+    anglePointer.innerText = `Angle: ${out.laser_beams.slice(-1)[0].angle}`;
+    RanNum.innerText = `Random Number: ${
+      out.laser_beams.slice(-1)[0].angle / 360
+    }`;
   }
 }
