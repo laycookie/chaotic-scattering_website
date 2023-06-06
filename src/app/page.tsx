@@ -82,6 +82,83 @@ export default function Home() {
   }, [settings]);
 
   const formRef = useRef<HTMLFormElement>(null);
+  function updateSettings() {
+    // get data from form
+    // for mass set circles
+    let circleAmountX: number | undefined = Number(
+      (formRef?.current as HTMLFormElement).circleAmountX?.value
+    );
+    if (circleAmountX === undefined) {
+      if (!massSetCircles?.circleAmountX) {
+        circleAmountX = 0;
+      } else {
+        circleAmountX = massSetCircles.circleAmountX;
+      }
+    }
+    let circleAmountY: number | undefined = Number(
+      (formRef?.current as HTMLFormElement).circleAmountY?.value
+    );
+    if (circleAmountY === undefined) {
+      if (!massSetCircles?.circleAmountY) {
+        circleAmountY = 0;
+      } else {
+        circleAmountY = massSetCircles.circleAmountY;
+      }
+    }
+    let circleRadius: number | undefined = Number(
+      (formRef?.current as HTMLFormElement).circleRadius?.value
+    );
+    if (circleRadius === undefined) {
+      if (!massSetCircles?.circleRadius) {
+        circleRadius = 0;
+      } else {
+        circleRadius = massSetCircles.circleRadius;
+      }
+    }
+    let circleSpacing = Number(
+      (formRef?.current as HTMLFormElement).circleSpacing?.value
+    );
+    if (circleSpacing === undefined) {
+      if (!massSetCircles?.circleSpacing) {
+        circleSpacing = 0;
+      } else {
+        circleSpacing = massSetCircles.circleSpacing;
+      }
+    }
+    // for settings
+    let zoom = Number((formRef?.current as HTMLFormElement).zoom?.value);
+    let ini_x = Number((formRef?.current as HTMLFormElement).ini_x?.value);
+    let ini_y = Number((formRef?.current as HTMLFormElement).ini_y?.value);
+    let ini_angle = Number(
+      (formRef?.current as HTMLFormElement).ini_angle?.value
+    );
+    let reflectionsNum: number | bigint | undefined = Number(
+      (formRef?.current as HTMLFormElement).reflectionsNum?.value
+    );
+    if (reflectionsNum === undefined || isNaN(reflectionsNum)) {
+      if (!settings?.reflectionsNum) {
+        reflectionsNum = 20n;
+      } else {
+        reflectionsNum = settings.reflectionsNum;
+      }
+    } else {
+      reflectionsNum = BigInt(reflectionsNum);
+    }
+
+    setMassSetCircles({
+      circleAmountX,
+      circleAmountY,
+      circleRadius,
+      circleSpacing,
+    });
+    setSettings({
+      zoom,
+      ini_x,
+      ini_y,
+      ini_angle,
+      reflectionsNum,
+    });
+  }
   return (
     <main>
       <div className={cn("fixed text-white m-4")}>
@@ -93,86 +170,11 @@ export default function Home() {
         ref={formRef}
         className={cn("fixed right-0 text-white m-4")}
         onChange={() => {
-          console.log(formRef.current?.dispatchEvent(new Event("submit")));
+          updateSettings();
         }}
         onSubmit={(e) => {
           e.preventDefault();
-
-          // get data from form
-          // for mass set circles
-          let circleAmountX: number | undefined = Number(
-            (e.target as HTMLFormElement).circleAmountX?.value
-          );
-          if (circleAmountX === undefined) {
-            if (!massSetCircles?.circleAmountX) {
-              circleAmountX = 0;
-            } else {
-              circleAmountX = massSetCircles.circleAmountX;
-            }
-          }
-          let circleAmountY: number | undefined = Number(
-            (e.target as HTMLFormElement).circleAmountY?.value
-          );
-          if (circleAmountY === undefined) {
-            if (!massSetCircles?.circleAmountY) {
-              circleAmountY = 0;
-            } else {
-              circleAmountY = massSetCircles.circleAmountY;
-            }
-          }
-          let circleRadius: number | undefined = Number(
-            (e.target as HTMLFormElement).circleRadius?.value
-          );
-          if (circleRadius === undefined) {
-            if (!massSetCircles?.circleRadius) {
-              circleRadius = 0;
-            } else {
-              circleRadius = massSetCircles.circleRadius;
-            }
-          }
-          let circleSpacing = Number(
-            (e.target as HTMLFormElement).circleSpacing?.value
-          );
-          if (circleSpacing === undefined) {
-            if (!massSetCircles?.circleSpacing) {
-              circleSpacing = 0;
-            } else {
-              circleSpacing = massSetCircles.circleSpacing;
-            }
-          }
-          // for settings
-          let zoom = Number((e.target as HTMLFormElement).zoom?.value);
-          let ini_x = Number((e.target as HTMLFormElement).ini_x?.value);
-          let ini_y = Number((e.target as HTMLFormElement).ini_y?.value);
-          let ini_angle = Number(
-            (e.target as HTMLFormElement).ini_angle?.value
-          );
-          let reflectionsNum: number | bigint | undefined = Number(
-            (e.target as HTMLFormElement).reflectionsNum?.value
-          );
-          if (reflectionsNum === undefined || isNaN(reflectionsNum)) {
-            if (!settings?.reflectionsNum) {
-              reflectionsNum = 20n;
-            } else {
-              reflectionsNum = settings.reflectionsNum;
-            }
-          } else {
-            reflectionsNum = BigInt(reflectionsNum);
-          }
-
-          setMassSetCircles({
-            circleAmountX,
-            circleAmountY,
-            circleRadius,
-            circleSpacing,
-          });
-          setSettings({
-            zoom,
-            ini_x,
-            ini_y,
-            ini_angle,
-            reflectionsNum,
-          });
+          updateSettings();
         }}
       >
         <h1 className="p-0 pb-2">Set Circles</h1>
