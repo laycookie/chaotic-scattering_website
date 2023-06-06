@@ -18,8 +18,16 @@ export default function Home() {
   const simCanvas = useRef<HTMLCanvasElement>(null);
 
   // simulation settings
-  const [settings, setSettings] = useState<Settings | null>(null);
-
+  const [settings, setSettings] = useState<Settings>({
+    zoom: 20,
+    ini_x: 0,
+    ini_y: 0,
+    ini_angle: 40,
+    reflectionsNum: 20n,
+  });
+  /* we don't set the default values here because we want to
+   * first init the canvas and then set the default values which will call a render
+   */
   const [massSetCircles, setMassSetCircles] = useState<MassSetCircles | null>(
     null
   );
@@ -45,6 +53,7 @@ export default function Home() {
   // init canvas
   useEffect(() => {
     initCanvas(simCanvas);
+    // default mass set circles settings
     setMassSetCircles({
       circleAmountX: 2,
       circleAmountY: 2,
@@ -55,22 +64,24 @@ export default function Home() {
 
   // create circles and before render
   useEffect(() => {
-    if (massSetCircles === null) return;
-    init().then(() => {
-      manny_circle_set(
-        massSetCircles.circleAmountX,
-        massSetCircles.circleAmountY,
-        massSetCircles.circleSpacing,
-        massSetCircles.circleRadius
-      );
-    });
+    if (massSetCircles !== null) {
+      init().then(() => {
+        manny_circle_set(
+          massSetCircles.circleAmountX,
+          massSetCircles.circleAmountY,
+          massSetCircles.circleSpacing,
+          massSetCircles.circleRadius
+        );
+        render(settings, setAngleCalculated);
+      });
+    }
   }, [massSetCircles]);
 
   useEffect(() => {
-    if (!settings) return;
     render(settings, setAngleCalculated);
   }, [settings]);
 
+  const formRef = useRef<HTMLFormElement>(null);
   return (
     <main>
       <div className={cn("fixed text-white m-4")}>
@@ -79,7 +90,11 @@ export default function Home() {
       </div>
       <form
         action=""
+        ref={formRef}
         className={cn("fixed right-0 text-white m-4")}
+        onChange={() => {
+          console.log(formRef.current?.dispatchEvent(new Event("submit")));
+        }}
         onSubmit={(e) => {
           e.preventDefault();
 
@@ -170,6 +185,7 @@ export default function Home() {
             id="circleAmountX"
             placeholder="Circle Amount X"
             defaultValue={massSetCircles?.circleAmountX || ""}
+            min={0}
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
@@ -180,6 +196,7 @@ export default function Home() {
             id="circleAmountY"
             placeholder="Circle Amount Y"
             defaultValue={massSetCircles?.circleAmountY || ""}
+            min={0}
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
@@ -191,6 +208,7 @@ export default function Home() {
             placeholder="Circles radius"
             defaultValue={massSetCircles?.circleRadius || ""}
             step={0.01}
+            min={0}
           ></Input>
         </div>
         <div className="space-y-1">
@@ -202,13 +220,14 @@ export default function Home() {
             placeholder="Circles spacing"
             defaultValue={massSetCircles?.circleSpacing || ""}
             step={0.01}
+            min={0}
           ></Input>
         </div>
 
-        <h1 className="p-0 pb-2">Lasser settings</h1>
+        <h1 className="p-0 pb-2">Laser settings</h1>
 
         <div className="space-y-1 mb-2">
-          <label htmlFor="ini_angle">Set angle of the lasser</label>
+          <label htmlFor="ini_angle">Set angle of the laser</label>
           <Input
             type="number"
             name="ini_angle"
@@ -219,23 +238,23 @@ export default function Home() {
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
-          <label htmlFor="ini_x">Innitial X of the laser</label>
+          <label htmlFor="ini_x">Initial X of the laser</label>
           <Input
             type="number"
             name="ini_x"
             id="ini_x"
-            placeholder="Innitial X"
+            placeholder="Initial X"
             defaultValue={settings?.ini_x || ""}
             step={0.01}
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
-          <label htmlFor="ini_y">Innitial Y of the laser</label>
+          <label htmlFor="ini_y">Initial Y of the laser</label>
           <Input
             type="number"
             name="ini_y"
             id="ini_y"
-            placeholder="Innitial Y"
+            placeholder="Initial Y"
             defaultValue={settings?.ini_y || ""}
             step={0.01}
           ></Input>
@@ -244,16 +263,15 @@ export default function Home() {
         <h1 className="p-0 pb-2">Misc.</h1>
 
         <div className="space-y-1 mb-2">
-          <label htmlFor="reflectionsNum">
-            Maxiumum amounth of reflections
-          </label>
+          <label htmlFor="reflectionsNum">Maximum amount of reflections</label>
           <Input
             type="number"
             name="reflectionsNum"
             id="reflectionsNum"
-            placeholder="Maxiumum amounth of reflections"
+            placeholder="Maximum amount of reflections"
             defaultValue={Number(settings?.reflectionsNum || 20) || ""}
             step={1}
+            min={0}
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
@@ -265,6 +283,7 @@ export default function Home() {
             placeholder="Zoom"
             defaultValue={settings?.zoom || ""}
             step={0.01}
+            min={0.01}
           ></Input>
         </div>
 
