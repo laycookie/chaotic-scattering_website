@@ -39,8 +39,10 @@ export function render(
   setAngle: (angle: number) => void
 ) {
   // checks if runs on client
-  if (typeof window === "undefined") console.warn("window is not defined");
-  if (app === null) throw new Error("app is not initialized");
+  if (typeof window === "undefined") {
+    console.warn("window is not defined");
+    return;
+  }
 
   const SCALER_CONST = zoom;
   let res_x = window.innerWidth;
@@ -55,6 +57,7 @@ export function render(
   app.stage.removeChildren();
 
   init().then(() => {
+    if (app === null) throw new Error("app is not initialized");
     const out = JSON.parse(simulate(ini_x, ini_y, ini_angle, reflectionsNum));
 
     // create circle sprite
