@@ -22,7 +22,7 @@ function calculateNewPoint(
 }
 
 // Renderer
-let app: PIXI.Application;
+let app: PIXI.Application | null = null;
 export function initCanvas(canvasRef: RefObject<HTMLCanvasElement>) {
   // attach app to the canvas
   if (canvasRef.current === null) return;
@@ -39,7 +39,8 @@ export function render(
   setAngle: (angle: number) => void
 ) {
   // checks if runs on client
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") console.warn("window is not defined");
+  if (app === null) throw new Error("app is not initialized");
 
   const SCALER_CONST = zoom;
   let res_x = window.innerWidth;

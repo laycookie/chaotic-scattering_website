@@ -41,6 +41,7 @@ export default function Home() {
       canvas.height = window.innerHeight;
 
       if (!settings) return;
+      initCanvas(simCanvas);
       render(settings, setAngleCalculated);
     }
     window.addEventListener("resize", resizer);
