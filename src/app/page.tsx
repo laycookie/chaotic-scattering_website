@@ -60,6 +60,7 @@ export default function Home() {
       circleAmountY: 2,
       circleRadius: 1,
       circleSpacing: 3,
+      circleSetShiftX: 0,
     });
   }, []);
 
@@ -71,7 +72,8 @@ export default function Home() {
           massSetCircles.circleAmountX,
           massSetCircles.circleAmountY,
           massSetCircles.circleSpacing,
-          massSetCircles.circleRadius
+          massSetCircles.circleRadius,
+          massSetCircles.circleSetShiftX
         );
         render(settings, setAngleCalculated);
       });
@@ -126,6 +128,17 @@ export default function Home() {
         circleSpacing = massSetCircles.circleSpacing;
       }
     }
+    let circleSetShiftX = Number(
+      (formRef?.current as HTMLFormElement).circleSetShiftX?.value
+    );
+    if (circleSetShiftX === undefined || isNaN(circleSetShiftX)) {
+      if (!massSetCircles?.circleSetShiftX) {
+        circleSetShiftX = 0;
+      } else {
+        circleSetShiftX = massSetCircles.circleSetShiftX;
+      }
+    }
+
     // for settings
     let zoom = Number((formRef?.current as HTMLFormElement).zoom?.value);
     let ini_x = Number((formRef?.current as HTMLFormElement).ini_x?.value);
@@ -151,6 +164,7 @@ export default function Home() {
       circleAmountY,
       circleRadius,
       circleSpacing,
+      circleSetShiftX,
     });
     setSettings({
       zoom,
@@ -214,7 +228,7 @@ export default function Home() {
             min={0}
           ></Input>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1 mb-2">
           <label htmlFor="circleRadius">Spacing between circles</label>
           <Input
             type="number"
@@ -222,6 +236,18 @@ export default function Home() {
             id="circleSpacing"
             placeholder="Circles spacing"
             defaultValue={massSetCircles?.circleSpacing || ""}
+            step={0.01}
+            min={0}
+          ></Input>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="circleSetShiftX">Even circle shift X</label>
+          <Input
+            type="number"
+            name="circleSetShiftX"
+            id="circleSetShiftX"
+            placeholder="Even circle shift X"
+            defaultValue={massSetCircles?.circleSetShiftX || ""}
             step={0.01}
             min={0}
           ></Input>

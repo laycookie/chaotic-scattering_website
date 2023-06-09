@@ -11,4 +11,5 @@ export type MassSetCircles = {
   circleAmountY: number;
   circleRadius: number;
   circleSpacing: number;
+  circleSetShiftX: number;
 };
