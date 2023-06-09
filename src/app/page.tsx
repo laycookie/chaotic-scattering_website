@@ -237,7 +237,7 @@ export default function Home() {
             id="ini_angle"
             placeholder="Angle"
             defaultValue={settings?.ini_angle || ""}
-            step={0.00000001}
+            step={1e-13}
           ></Input>
         </div>
         <div className="space-y-1 mb-2">
