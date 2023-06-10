@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import init, { manny_circle_set } from "chaos_theory";
 import { cn } from "@/lib/utils";
 import { render, initCanvas } from "@/lib/renderer";
@@ -13,6 +13,7 @@ import {
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import type { Settings, MassSetCircles } from "@/types/main.d";
+import { isInteger } from "tailwind-merge/dist/lib/validators";
 export default function Home() {
   const [angleCalculated, setAngleCalculated] = useState<number>(0);
   const simCanvas = useRef<HTMLCanvasElement>(null);
@@ -85,79 +86,59 @@ export default function Home() {
   }, [settings]);
 
   const formRef = useRef<HTMLFormElement>(null);
-  function updateSettings() {
-    // get data from form
-    // for mass set circles
-    let circleAmountX: number | undefined = Number(
-      (formRef?.current as HTMLFormElement).circleAmountX?.value
-    );
-    if (circleAmountX === undefined) {
-      if (!massSetCircles?.circleAmountX) {
-        circleAmountX = 0;
-      } else {
-        circleAmountX = massSetCircles.circleAmountX;
-      }
+  function setValueBasedOnForm<T>(
+    curValues: T,
+    formValue: keyof T,
+    defaultTo: number = 0,
+    returnInt: boolean = false
+  ): number {
+    let value = (formRef?.current as HTMLFormElement)[formValue as string]
+      ?.value;
+
+    if (!value) {
+      if (!curValues) value = curValues[formValue];
+      else value = defaultTo;
     }
-    let circleAmountY: number | undefined = Number(
-      (formRef?.current as HTMLFormElement).circleAmountY?.value
-    );
-    if (circleAmountY === undefined) {
-      if (!massSetCircles?.circleAmountY) {
-        circleAmountY = 0;
+
+    // checks for big int
+    if (returnInt) {
+      if (Number(value) % 1 === 0) {
+        return Number(BigInt(value));
       } else {
-        circleAmountY = massSetCircles.circleAmountY;
-      }
-    }
-    let circleRadius: number | undefined = Number(
-      (formRef?.current as HTMLFormElement).circleRadius?.value
-    );
-    if (circleRadius === undefined) {
-      if (!massSetCircles?.circleRadius) {
-        circleRadius = 0;
-      } else {
-        circleRadius = massSetCircles.circleRadius;
-      }
-    }
-    let circleSpacing = Number(
-      (formRef?.current as HTMLFormElement).circleSpacing?.value
-    );
-    if (circleSpacing === undefined) {
-      if (!massSetCircles?.circleSpacing) {
-        circleSpacing = 0;
-      } else {
-        circleSpacing = massSetCircles.circleSpacing;
-      }
-    }
-    let circleSetShiftX = Number(
-      (formRef?.current as HTMLFormElement).circleSetShiftX?.value
-    );
-    if (circleSetShiftX === undefined || isNaN(circleSetShiftX)) {
-      if (!massSetCircles?.circleSetShiftX) {
-        circleSetShiftX = 0;
-      } else {
-        circleSetShiftX = massSetCircles.circleSetShiftX;
+        throw new Error("value is not an integer");
       }
     }
 
+    return Number(value);
+  }
+  function updateSettings() {
+    if (!massSetCircles) return;
+    let [
+      circleAmountX,
+      circleAmountY,
+      circleRadius,
+      circleSpacing,
+      circleSetShiftX,
+    ] = (
+      [
+        "circleAmountX",
+        "circleAmountY",
+        "circleRadius",
+        "circleSpacing",
+        "circleSetShiftX",
+      ] as const
+    ).map((value) => {
+      return setValueBasedOnForm<MassSetCircles>(massSetCircles, value);
+    });
+
     // for settings
-    let zoom = Number((formRef?.current as HTMLFormElement).zoom?.value);
-    let ini_x = Number((formRef?.current as HTMLFormElement).ini_x?.value);
-    let ini_y = Number((formRef?.current as HTMLFormElement).ini_y?.value);
-    let ini_angle = Number(
-      (formRef?.current as HTMLFormElement).ini_angle?.value
+    let zoom: number = setValueBasedOnForm<Settings>(settings, "zoom");
+    let ini_x: number = setValueBasedOnForm<Settings>(settings, "ini_x");
+    let ini_y: number = setValueBasedOnForm<Settings>(settings, "ini_y");
+    let ini_angle = setValueBasedOnForm<Settings>(settings, "ini_angle");
+    let reflectionsNum: bigint = BigInt(
+      setValueBasedOnForm<Settings>(settings, "reflectionsNum", 20, true)
     );
-    let reflectionsNum: number | bigint | undefined = Number(
-      (formRef?.current as HTMLFormElement).reflectionsNum?.value
-    );
-    if (reflectionsNum === undefined || isNaN(reflectionsNum)) {
-      if (!settings?.reflectionsNum) {
-        reflectionsNum = 20n;
-      } else {
-        reflectionsNum = settings.reflectionsNum;
-      }
-    } else {
-      reflectionsNum = BigInt(reflectionsNum);
-    }
 
     setMassSetCircles({
       circleAmountX,
