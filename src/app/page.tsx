@@ -78,7 +78,7 @@ export default function Home() {
           massSetCircles.circleRadius,
           massSetCircles.circleSetShiftX
         );
-        simulateWorld(simulationSettings).then(() => {
+        simulateWorld(simulationSettings, setAngleCalculated).then(() => {
           renderWorld(renderSettings);
         });
       });
@@ -89,7 +89,7 @@ export default function Home() {
     renderWorld(renderSettings);
   }, [renderSettings]);
   useEffect(() => {
-    simulateWorld(simulationSettings);
+    simulateWorld(simulationSettings, setAngleCalculated);
   }, [simulationSettings]);
 
   const formRef = useRef<HTMLFormElement>(null);

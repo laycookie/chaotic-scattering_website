@@ -125,14 +125,13 @@ export function renderWorld({ zoom, cameraX, cameraY }: RenderSettings) {
   }
 }
 
-export async function simulateWorld({
-  ini_x,
-  ini_y,
-  ini_angle,
-  reflectionsNum,
-}: SimulationSettings) {
+export async function simulateWorld(
+  { ini_x, ini_y, ini_angle, reflectionsNum }: SimulationSettings,
+  setAngleCalculated: (angle: number) => void
+) {
   await init();
   const out = JSON.parse(simulate(ini_x, ini_y, ini_angle, reflectionsNum));
   circles = out.circles;
   laserBeams = out.laser_beams;
+  setAngleCalculated(out.laser_beams[out.laser_beams.length - 1].angle / 360);
 }
