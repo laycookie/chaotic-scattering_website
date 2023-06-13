@@ -11,5 +11,5 @@ The following project is a front-end for my little experiment on how to use Rust
 3. Clone this repository
 4. Open terminal in the project folder
 5. Run `npm install`
-6. Run `npm start`
+6. Run `npm run dev`
 7. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
