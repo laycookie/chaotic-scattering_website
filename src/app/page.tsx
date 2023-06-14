@@ -11,6 +11,7 @@ import type {
   RenderSettings,
   SimulationSettings,
 } from "@/types/main.d";
+import { render } from "react-dom";
 export default function Home() {
   const [angleCalculated, setAngleCalculated] = useState<number>(0);
   const simCanvas = useRef<HTMLCanvasElement>(null);
@@ -66,6 +67,25 @@ export default function Home() {
       circleSetShiftX: 0,
     });
   }, []);
+
+  useEffect(() => {
+    // check for scroll and zoom
+    const scrollSensitive = 100;
+    function scrollHendeler(e: WheelEvent) {
+      if (renderSettings.zoom < 1 && e.deltaY < 0) return;
+      let newZoom = renderSettings.zoom + e.deltaY / scrollSensitive;
+      if (newZoom < 1) newZoom = 1;
+      setRenderSettings((prev) => ({
+        ...prev,
+        zoom: newZoom,
+      }));
+    }
+
+    document.addEventListener("wheel", scrollHendeler);
+    return () => {
+      document.removeEventListener("wheel", scrollHendeler);
+    };
+  }, [renderSettings.zoom]);
 
   // create circles and before render
   useEffect(() => {
@@ -318,7 +338,7 @@ export default function Home() {
               placeholder="Zoom"
               defaultValue={renderSettings?.zoom || ""}
               step={0.01}
-              min={0.01}
+              min={1}
             ></Input>
           </div>
           <div className="space-y-1 mb-2">
