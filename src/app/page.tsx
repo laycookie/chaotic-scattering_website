@@ -67,7 +67,7 @@ export default function Home() {
     const scrollSensitive = 100;
     function scrollHendeler(e: WheelEvent) {
       if (renderSettings.zoom < 1 && e.deltaY < 0) return;
-      let newZoom = renderSettings.zoom + e.deltaY / scrollSensitive;
+      let newZoom = renderSettings.zoom + e.deltaY / -scrollSensitive;
       if (newZoom < 1) newZoom = 1;
       setRenderSettings((prev) => ({
         ...prev,
