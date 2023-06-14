@@ -30,6 +30,7 @@ export function initCanvas(canvasRef: RefObject<HTMLCanvasElement>) {
     view: canvasRef.current,
     width: window.innerWidth,
     height: window.innerHeight,
+    resizeTo: window,
     antialias: true,
   });
 }

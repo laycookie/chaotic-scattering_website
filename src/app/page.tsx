@@ -40,12 +40,6 @@ export default function Home() {
   // make canvas full screen
   useEffect(() => {
     function resizer() {
-      const canvas = simCanvas.current;
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      initCanvas(simCanvas);
       renderWorld(renderSettings);
     }
     window.addEventListener("resize", resizer);
@@ -216,7 +210,7 @@ export default function Home() {
       >
         <h1 className="p-0 pb-2">Set Circles</h1>
         <div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="circleAmountX">Amount of circles in X</label>
             <Input
               type="number"
@@ -227,7 +221,7 @@ export default function Home() {
               min={0}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="circleAmountY">Amount of circles in Y</label>
             <Input
               type="number"
@@ -238,7 +232,7 @@ export default function Home() {
               min={0}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="circleRadius">Radius of the circles</label>
             <Input
               type="number"
@@ -250,7 +244,7 @@ export default function Home() {
               min={0}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="circleRadius">Spacing between circles</label>
             <Input
               type="number"
@@ -274,9 +268,9 @@ export default function Home() {
             ></Input>
           </div>
         </div>
-        <h1 className="p-0 pb-2">Laser settings</h1>
+        <h1 className="pb-2">Laser settings</h1>
         <div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="ini_angle">Set angle of the laser</label>
             <Input
               type="number"
@@ -287,7 +281,7 @@ export default function Home() {
               step={1e-13}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="ini_x">Initial X of the laser</label>
             <Input
               type="number"
@@ -298,7 +292,7 @@ export default function Home() {
               step={0.01}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="ini_y">Initial Y of the laser</label>
             <Input
               type="number"
@@ -311,9 +305,9 @@ export default function Home() {
           </div>
         </div>
 
-        <h1 className="p-0 pb-2">Misc.</h1>
+        <h1 className="pb-2">Misc.</h1>
         <div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="reflectionsNum">
               Maximum amount of reflections
             </label>
@@ -329,7 +323,7 @@ export default function Home() {
               min={0}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="zoom">Zoom</label>
             <Input
               type="number"
@@ -341,7 +335,7 @@ export default function Home() {
               min={1}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="CameraX">Camera X possition</label>
             <Input
               type="number"
@@ -352,7 +346,7 @@ export default function Home() {
               step={0.01}
             ></Input>
           </div>
-          <div className="space-y-1 mb-2">
+          <div className={cn("space-y-1 mb-2")}>
             <label htmlFor="CameraY">Camera Y possition</label>
             <Input
               type="number"
@@ -364,7 +358,7 @@ export default function Home() {
             ></Input>
           </div>
         </div>
-        <div className="flex w-full justify-end">
+        <div className={cn("flex w-full justify-end")}>
           <Button className="mt-4" variant="outline">
             Render
           </Button>
