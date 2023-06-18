@@ -56,10 +56,8 @@ let laserBeams: LaserBeam[] = [];
 export function renderWorld({ zoom, cameraX, cameraY }: RenderSettings) {
   // checks before rendering
   // checks if runs on client
-  if (typeof window === "undefined") {
-    console.warn("window is not defined");
-    return;
-  }
+  if (typeof window === "undefined") return;
+
   // check if canvas is initialized
   if (!app) {
     console.warn("app is not initialized");

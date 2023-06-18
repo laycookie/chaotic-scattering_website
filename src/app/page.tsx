@@ -64,10 +64,15 @@ export default function Home() {
 
   useEffect(() => {
     // check for scroll and zoom
-    const scrollSensitive = 100;
+    const scrollSensitiveDamp = 100;
     function scrollHendeler(e: WheelEvent) {
       if (renderSettings.zoom < 1 && e.deltaY < 0) return;
-      let newZoom = renderSettings.zoom + e.deltaY / -scrollSensitive;
+      let newZoom: number = renderSettings.zoom;
+      if (e.deltaY > 0) {
+        newZoom = (newZoom / e.deltaY) * scrollSensitiveDamp;
+      } else if (e.deltaY < 0) {
+        newZoom = (newZoom * e.deltaY) / -scrollSensitiveDamp;
+      }
       if (newZoom < 1) newZoom = 1;
       setRenderSettings((prev) => ({
         ...prev,
@@ -76,8 +81,24 @@ export default function Home() {
     }
 
     document.addEventListener("wheel", scrollHendeler);
+    // check for cursor movement and move camera
+    const movementSensetivity = 1;
+    function mouseMoveHendeler(e: MouseEvent) {
+      if (e.buttons === 1) {
+        setRenderSettings((prev) => ({
+          ...prev,
+          cameraX:
+            prev.cameraX - e.movementX * (movementSensetivity / prev.zoom),
+          cameraY:
+            prev.cameraY + e.movementY * (movementSensetivity / prev.zoom),
+        }));
+      }
+    }
+    document.addEventListener("mousemove", mouseMoveHendeler);
+
     return () => {
       document.removeEventListener("wheel", scrollHendeler);
+      document.removeEventListener("mousemove", mouseMoveHendeler);
     };
   }, [renderSettings.zoom]);
 
