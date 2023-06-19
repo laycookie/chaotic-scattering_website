@@ -64,7 +64,7 @@ export default function Home() {
   }, []);
 
   const [sensetivity, setSensetivity] = useState<SensitivitySettings>({
-    scrollSensitiveDamp: 100,
+    scrollSensitiveDamp: 90,
     movementSensetivity: 25,
   });
   useEffect(() => {

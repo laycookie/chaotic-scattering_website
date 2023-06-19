@@ -132,5 +132,5 @@ export async function simulateWorld(
   const out = JSON.parse(simulate(ini_x, ini_y, ini_angle, reflectionsNum));
   circles = out.circles;
   laserBeams = out.laser_beams;
-  setAngleCalculated(out.laser_beams[out.laser_beams.length - 1].angle / 360);
+  setAngleCalculated(out.laser_beams[out.laser_beams.length - 1].angle);
 }
