@@ -11,6 +11,11 @@ export type RenderSettings = {
   cameraY: number;
 };
 
+export type SensitivitySettings = {
+  movementSensetivity: number;
+  scrollSensitiveDamp: number;
+};
+
 export type MassSetCircles = {
   circleAmountX: number;
   circleAmountY: number;

@@ -9,6 +9,7 @@ import { Input } from "../../components/ui/input";
 import type {
   MassSetCircles,
   RenderSettings,
+  SensitivitySettings,
   SimulationSettings,
 } from "@/types/main.d";
 import { render } from "react-dom";
@@ -62,16 +63,19 @@ export default function Home() {
     });
   }, []);
 
+  const [sensetivity, setSensetivity] = useState<SensitivitySettings>({
+    scrollSensitiveDamp: 100,
+    movementSensetivity: 25,
+  });
   useEffect(() => {
     // check for scroll and zoom
-    const scrollSensitiveDamp = 100;
     function scrollHendeler(e: WheelEvent) {
       if (renderSettings.zoom < 1 && e.deltaY < 0) return;
       let newZoom: number = renderSettings.zoom;
       if (e.deltaY > 0) {
-        newZoom = (newZoom / e.deltaY) * scrollSensitiveDamp;
+        newZoom = (newZoom / e.deltaY) * sensetivity.scrollSensitiveDamp;
       } else if (e.deltaY < 0) {
-        newZoom = (newZoom * e.deltaY) / -scrollSensitiveDamp;
+        newZoom = (newZoom * e.deltaY) / -sensetivity.scrollSensitiveDamp;
       }
       if (newZoom < 1) newZoom = 1;
       setRenderSettings((prev) => ({
@@ -79,18 +83,19 @@ export default function Home() {
         zoom: newZoom,
       }));
     }
-
     document.addEventListener("wheel", scrollHendeler);
+
     // check for cursor movement and move camera
-    const movementSensetivity = 1;
     function mouseMoveHendeler(e: MouseEvent) {
       if (e.buttons === 1) {
         setRenderSettings((prev) => ({
           ...prev,
           cameraX:
-            prev.cameraX - e.movementX * (movementSensetivity / prev.zoom),
+            prev.cameraX -
+            e.movementX * (sensetivity.movementSensetivity / prev.zoom),
           cameraY:
-            prev.cameraY + e.movementY * (movementSensetivity / prev.zoom),
+            prev.cameraY +
+            e.movementY * (sensetivity.movementSensetivity / prev.zoom),
         }));
       }
     }
@@ -100,7 +105,11 @@ export default function Home() {
       document.removeEventListener("wheel", scrollHendeler);
       document.removeEventListener("mousemove", mouseMoveHendeler);
     };
-  }, [renderSettings.zoom]);
+  }, [
+    renderSettings.zoom,
+    sensetivity.movementSensetivity,
+    sensetivity.scrollSensitiveDamp,
+  ]);
 
   // create circles and before render
   useEffect(() => {
@@ -192,6 +201,11 @@ export default function Home() {
       return setValueBasedOnForm<RenderSettings>(renderSettings, value);
     });
 
+    let [scrollSensitiveDamp, movementSensetivity] = (
+      ["scrollSensitiveDamp", "movementSensetivity"] as const
+    ).map((value) => {
+      return setValueBasedOnForm<SensitivitySettings>(sensetivity, value);
+    });
     setMassSetCircles({
       circleAmountX,
       circleAmountY,
@@ -210,6 +224,14 @@ export default function Home() {
       ini_angle,
       reflectionsNum,
     });
+    console.table({
+      scrollSensitiveDamp,
+      movementSensetivity,
+    });
+    setSensetivity({
+      scrollSensitiveDamp,
+      movementSensetivity,
+    });
   }
   return (
     <main>
@@ -218,7 +240,6 @@ export default function Home() {
         <p>Random Number: {angleCalculated / 360}</p>
       </div>
       <form
-        action=""
         ref={formRef}
         className={cn("fixed right-0 text-white m-4")}
         onChange={() => {
@@ -342,6 +363,32 @@ export default function Home() {
               }
               step={1}
               min={0}
+            ></Input>
+          </div>
+          <div className={cn("space-y-1 mb-2")}>
+            <label htmlFor="movementSensetivity">Sensetivity</label>
+            <Input
+              type="number"
+              name="movementSensetivity"
+              id="movementSensetivity"
+              placeholder="Sensetivity"
+              defaultValue={sensetivity.movementSensetivity || ""}
+              step={1}
+              min={1}
+            ></Input>
+          </div>
+          <div className={cn("space-y-1 mb-2")}>
+            <label htmlFor="scrollSensitiveDamp">
+              Scroll sensetivity dampening
+            </label>
+            <Input
+              type="number"
+              name="scrollSensitiveDamp"
+              id="scrollSensitiveDamp"
+              placeholder="Scroll sensitivity damp"
+              defaultValue={sensetivity.scrollSensitiveDamp || ""}
+              step={1}
+              min={1}
             ></Input>
           </div>
           <div className={cn("space-y-1 mb-2")}>
