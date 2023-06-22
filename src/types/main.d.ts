@@ -13,7 +13,7 @@ export type RenderSettings = {
 
 export type SensitivitySettings = {
   movementSensetivity: number;
-  scrollSensitiveDamp: number;
+  scrollSensitive: number;
 };
 
 export type MassSetCircles = {

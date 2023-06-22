@@ -68,6 +68,16 @@
 
     --radius: 0.5rem;
   }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--primary-foreground));
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+  }
 }
 
 @layer base {
@@ -78,8 +88,13 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-}
 
-h1 {
-  @apply text-xl font-bold;
+  h1 {
+    @apply text-xl font-bold;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
 }

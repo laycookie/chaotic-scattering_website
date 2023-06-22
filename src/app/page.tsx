@@ -64,8 +64,8 @@ export default function Home() {
   }, []);
 
   const [sensetivity, setSensetivity] = useState<SensitivitySettings>({
-    scrollSensitiveDamp: 90,
-    movementSensetivity: 25,
+    scrollSensitive: 1.5,
+    movementSensetivity: 5,
   });
   useEffect(() => {
     // check for scroll and zoom
@@ -73,9 +73,9 @@ export default function Home() {
       if (renderSettings.zoom < 1 && e.deltaY < 0) return;
       let newZoom: number = renderSettings.zoom;
       if (e.deltaY > 0) {
-        newZoom = (newZoom / e.deltaY) * sensetivity.scrollSensitiveDamp;
+        newZoom /= sensetivity.scrollSensitive;
       } else if (e.deltaY < 0) {
-        newZoom = (newZoom * e.deltaY) / -sensetivity.scrollSensitiveDamp;
+        newZoom *= sensetivity.scrollSensitive;
       }
       if (newZoom < 1) newZoom = 1;
       setRenderSettings((prev) => ({
@@ -108,7 +108,7 @@ export default function Home() {
   }, [
     renderSettings.zoom,
     sensetivity.movementSensetivity,
-    sensetivity.scrollSensitiveDamp,
+    sensetivity.scrollSensitive,
   ]);
 
   // create circles and before render
@@ -201,8 +201,8 @@ export default function Home() {
       return setValueBasedOnForm<RenderSettings>(renderSettings, value);
     });
 
-    let [scrollSensitiveDamp, movementSensetivity] = (
-      ["scrollSensitiveDamp", "movementSensetivity"] as const
+    let [scrollSensitive, movementSensetivity] = (
+      ["scrollSensitive", "movementSensetivity"] as const
     ).map((value) => {
       return setValueBasedOnForm<SensitivitySettings>(sensetivity, value);
     });
@@ -225,11 +225,11 @@ export default function Home() {
       reflectionsNum,
     });
     console.table({
-      scrollSensitiveDamp,
+      scrollSensitive,
       movementSensetivity,
     });
     setSensetivity({
-      scrollSensitiveDamp,
+      scrollSensitive,
       movementSensetivity,
     });
   }
@@ -241,7 +241,9 @@ export default function Home() {
       </div>
       <form
         ref={formRef}
-        className={cn("fixed right-0 text-white m-4")}
+        className={cn(
+          "fixed overflow-auto h-[75vh] right-0 text-white m-2 p-2"
+        )}
         onChange={() => {
           updateSettings();
         }}
@@ -378,15 +380,15 @@ export default function Home() {
             ></Input>
           </div>
           <div className={cn("space-y-1 mb-2")}>
-            <label htmlFor="scrollSensitiveDamp">
+            <label htmlFor="scrollSensitive">
               Scroll sensetivity dampening
             </label>
             <Input
               type="number"
-              name="scrollSensitiveDamp"
-              id="scrollSensitiveDamp"
+              name="scrollSensitive"
+              id="scrollSensitive"
               placeholder="Scroll sensitivity damp"
-              defaultValue={sensetivity.scrollSensitiveDamp || ""}
+              defaultValue={sensetivity.scrollSensitive || ""}
               step={1}
               min={1}
             ></Input>
